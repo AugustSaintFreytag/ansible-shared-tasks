@@ -1,0 +1,98 @@
+- name: "CRYPTO - Create base directory for certificates"
+  file:
+    path: "{{ app_certificate_root }}"
+    state: directory
+  become: yes
+  tags:
+    - certificates
+    - certificates-prepare
+
+# Generation
+
+- name: "CRYPTO - Generate or update certificates"
+  docker_container:
+    image: "certbot/certbot"
+    name: "luxembourg_certbot"
+    command: "certonly -n --standalone --preferred-challenges http --agree-tos --email {{ app_certificate_provisioning_username }} --cert-name {{ server_domain.name }} -d {{ server_domain.domains }}"
+    volumes:
+      - "{{ app_certificate_root }}:/etc/letsencrypt"
+      - "{{ app_certificate_log_root }}:/var/log/letsencrypt"
+    ports:
+      - "80:80"
+      - "443:443"
+    detach: no
+    cleanup: yes
+  loop: "{{ server_domains }}"
+  loop_control:
+    loop_var: server_domain
+  become: yes
+  register: certificate_generation
+  tags:
+    - certificates
+    - certificates-acquire
+
+# State
+
+- name: "CRYPTO - Get certificate file system stats"
+  stat:
+    path: "{{ app_certificate_root }}/live/{{ server_domain.name }}/fullchain.pem"
+    follow: yes
+  loop: "{{ server_domains }}"
+  loop_control:
+    loop_var: server_domain
+  become: yes
+  register: server_certificate_stats
+  tags:
+    - certificates
+    - certificates-prepare
+    - certificates-state
+
+- name: "CRYPTO - Persist certificate state"
+  copy:
+    dest: "{{ app_certificate_root }}/live/{{ result.server_domain.name }}/fullchain.checksum"
+    content: "{{ result.stat.checksum }}\n"
+  loop: "{{ server_certificate_stats.results }}"
+  loop_control:
+    loop_var: result
+  when: (server_certificate_stats is succeeded) and (result.stat.exists == true)
+  become: yes
+  register: server_certificate_checksum
+  tags:
+    - certificates
+    - certificates-prepare
+    - certificates-state
+
+# DH Parameters
+
+- name: "CRYPTO - Create directory for parameters"
+  file:
+    path: "{{ app_certificate_root }}/params/"
+    state: directory
+  become: yes
+  tags:
+    - certificates
+    - certificate-dh-parameters
+
+- name: "CRYPTO - Get DH parameters file system stats"
+  stat:
+    path: "{{ app_certificate_root }}/params/dhparam-4096.pem"
+  become: yes
+  register: server_certificate_dh_parameters_stats
+  tags:
+    - certificates
+    - certificate-dh-parameters
+
+- name: "CRYPTO - Generate DH parameters"
+  docker_container:
+    image: "frapsoft/openssl"
+    name: "luxembourg_openssl"
+    command: "dhparam -dsaparam -out /etc/letsencrypt/params/dhparam-4096.pem 4096"
+    volumes:
+      - "{{ app_certificate_root }}:/etc/letsencrypt"
+    detach: no
+    cleanup: yes
+  become: yes
+  when: (server_certificate_dh_parameters_stats.stat.exists == false) or (server_certificate_checksum is changed)
+  tags:
+    - certificates
+    - certificate-dh-parameters
