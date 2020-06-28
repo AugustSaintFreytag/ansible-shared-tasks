@@ -8,10 +8,10 @@ Some tasks may use certain variables to control what kind of operations they per
 
 Creating certificates uses the publicly available service [Let's Encrypt](https://letsencrypt.org). When including the task, the following variables should be defined, as well.
 
-#### `app_certificate_root`
+#### `server_certificate_root`
 The root directory all output and dependency files for `certbot` are placed for permanent residence on the server, commonly set to `/etc/letsencrypt`.
 
-#### `app_certificate_log_root`
+#### `server_certificate_log_root`
 The directory to store all logs created by `certbot` during operation, commonly set to `var/log/letsencrypt`.
 
 #### `app_certificate_provisioning_username`
