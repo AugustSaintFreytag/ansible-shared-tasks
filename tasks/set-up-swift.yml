@@ -1,0 +1,64 @@
+# Dependency Set-Up
+
+- name: "APT - Install common dependencies"
+  apt:
+    name: ["clang", "libicu-dev", "libcurl4", "libcurl4-openssl-dev", "openssl", "libssl-dev", "libpython2.7", "libpython2.7-dev", "uuid-dev"]
+    update_cache: yes
+  become: yes
+  tags:
+    - swift
+    - swift-dependencies
+
+# Release Version Persistence
+
+- name: "FILE - Create directory for Swift version persistence"
+  file:
+    path: "/var/lib/swift"
+    state: directory
+  become: yes
+  tags:
+    - swift
+
+- name: "FILE - Persist Swift binary release version"
+  copy:
+    dest: "/var/lib/swift/swift-release"
+    content: "{{ dep_swift_release }}\n"
+  become: yes
+  register: "swift_release_version"
+  tags:
+    - swift
+
+# Release Download & Set-Up
+
+- name: "FILE - Download Swift release"
+  get_url:
+    dest: "/var/tmp/swift-archive.tar.gz"
+    url: "{{ dep_swift_release }}"
+  when: swift_release_version is changed
+  tags:
+    - swift
+    - swift-download
+
+- name: "FILE - Unpack Swift release download"
+  unarchive:
+    remote_src: yes
+    src: /var/tmp/swift-archive.tar.gz
+    dest: /var/tmp/
+  when: swift_release_version is changed
+  tags:
+    - swift
+
+- name: "FILE - Install Swift release"
+  command: "/bin/sh -c 'rsync -av /var/tmp/swift*/usr/ /usr'"
+  become: yes
+  when: swift_release_version is changed
+  tags:
+    - swift
+
+- name: "FILE - Remove temporary Swift archives"
+  command: "/bin/sh -c 'rm -rf /var/tmp/swift*'"
+  when: swift_release_version is changed
+  tags:
+    - swift
+    - swift-download
+    - swift-cleanup

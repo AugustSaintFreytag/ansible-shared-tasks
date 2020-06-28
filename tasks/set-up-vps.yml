@@ -1,0 +1,93 @@
+# Virtual Private Server Set-Up
+
+- name: APT - Install Prerequisites
+  apt:
+    name: aptitude
+    state: latest
+    update_cache: yes
+    force_apt_get: yes
+
+# Sudo Group Setup
+- name: SYSTEM - Ensure 'wheel' permission group
+  group:
+    name: wheel
+    state: present
+
+- name: SYSTEM - Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: '/usr/sbin/visudo -cf %s'
+
+# User + Key Setup
+- name: SYSTEM - Create new regular user with sudo privileges
+  user:
+    name: "{{ ansible_user }}"
+    state: present
+    groups: wheel
+    append: true
+    create_home: true
+    shell: /bin/bash
+
+- name: SYSTEM - Disable password authentication for root
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin prohibit-password'
+
+- name: "SYSTEM - Pass ownership of copied authorized keys to server user"
+  file:
+    path: "/home/server/.ssh"
+    state: directory
+    owner: server
+    group: server
+  tags: ssh-keys
+
+- name: "SYSTEM - Copy authorized keys from root user"
+  copy:
+    remote_src: yes
+    src: "/root/.ssh/authorized_keys"
+    dest: "/home/server/.ssh/authorized_keys"
+  tags: ssh-keys
+
+- name: "SYSTEM - Pass ownership of copied authorized keys to server user"
+  file:
+    path: "/home/server/.ssh/authorized_keys"
+    owner: server
+    group: server
+  tags: ssh-keys
+
+# Install Packages
+- name: APT - Update apt package manager
+  apt:
+    update_cache: yes
+
+- name: Install required system packages
+  apt:
+    name: ["curl", "vim", "git", "ufw"]
+    update_cache: yes
+
+# UFW Setup
+- name: UFW - Allow SSH connections
+  ufw:
+    rule: allow
+    name: OpenSSH
+
+- name: UFW - Deny all other incoming traffic by default
+  ufw:
+    state: enabled
+    policy: deny
+    direction: incoming
+
+# Update Packages
+- name: APT - Safe update for all apt packages
+  apt: upgrade=yes
+  tags: "upgrade"
+
+# Reboot System
+- name: SYSTEM - Reboot system
+  reboot:
+  tags: "upgrade"

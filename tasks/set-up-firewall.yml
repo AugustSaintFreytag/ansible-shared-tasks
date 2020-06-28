@@ -1,0 +1,19 @@
+- name: UFW - Allow HTTP connections
+  ufw:
+    rule: allow
+    proto: tcp
+    to_port: "80"
+    comment: "HTTP"
+  become: yes
+  tags:
+    - network
+  
+- name: UFW - Allow HTTPS connections
+  ufw:
+    rule: allow
+    proto: tcp
+    to_port: "443"
+    comment: "HTTPS"
+  become: yes
+  tags:
+    - network
