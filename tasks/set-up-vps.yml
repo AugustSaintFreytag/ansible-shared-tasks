@@ -24,7 +24,7 @@
 # User + Key Setup
 - name: SYSTEM - Create new regular user with sudo privileges
   user:
-    name: "{{ ansible_user }}"
+    name: "{{ server_user }}"
     state: present
     groups: wheel
     append: true
@@ -38,26 +38,26 @@
     regexp: '^#?PermitRootLogin'
     line: 'PermitRootLogin prohibit-password'
 
-- name: "SYSTEM - Pass ownership of copied authorized keys to server user"
+- name: "SYSTEM - Pass ownership of copied authorized keys to ansible user"
   file:
-    path: "/home/server/.ssh"
+    path: "/home/{{ server_user }}/.ssh"
     state: directory
-    owner: server
-    group: server
+    owner: "{{ server_user }}"
+    group: "{{ server_user }}"
   tags: ssh-keys
 
 - name: "SYSTEM - Copy authorized keys from root user"
   copy:
     remote_src: yes
     src: "/root/.ssh/authorized_keys"
-    dest: "/home/server/.ssh/authorized_keys"
+    dest: "/home/{{ server_user }}/.ssh/authorized_keys"
   tags: ssh-keys
 
-- name: "SYSTEM - Pass ownership of copied authorized keys to server user"
+- name: "SYSTEM - Pass ownership of copied authorized keys to ansible user"
   file:
-    path: "/home/server/.ssh/authorized_keys"
-    owner: server
-    group: server
+    path: "/home/{{ server_user }}/.ssh/authorized_keys"
+    owner: "{{ server_user }}"
+    group: "{{ server_user }}"
   tags: ssh-keys
 
 # Install Packages
