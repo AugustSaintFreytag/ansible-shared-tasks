@@ -55,7 +55,7 @@
 
 - name: "SYSTEM - Pass ownership of copied authorized keys to ansible user"
   file:
-    path: "/home/{{ server_user }}/.ssh/authorized_keys"
+    path: "/home/server/.ssh"
     owner: "{{ server_user }}"
     group: "{{ server_user }}"
   tags: ssh-keys
