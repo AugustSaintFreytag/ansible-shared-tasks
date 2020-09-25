@@ -22,22 +22,21 @@
 
 # Download Release
   
-- name: "FILE - Download GitLab Listener release"
-  get_url:
-    url: "{{ dep_listener_release }}"
-    dest: "/var/tmp/gitlab-listener"
+- name: "FILE - Remove existing temporary GitLab Listener files"
+  command: "rm -rf /var/tmp/gitlab-listener*"
   when: dep_listener_release_version is changed
   tags:
     - listener
     - listener-download
-    
-- name: "FILE - Remove existing GitLab Listener temporary files"
-  file:
+
+- name: "FILE - Download GitLab Listener release"
+  get_url:
+    url: "{{ dep_listener_release }}"
     dest: "/var/tmp/gitlab-listener.tar.gz"
-    state: absent
+  when: dep_listener_release_version is changed
   tags:
     - listener
-    - listener-unpack
+    - listener-download
 
 - name: "FILE - Unpack GitLab Listener release"
   unarchive:
@@ -53,6 +52,7 @@
   file:
     dest: "/var/tmp/gitlab-listener.tar.gz"
     state: absent
+  when: dep_listener_release_version is changed
   tags:
     - listener
     - listener-unpack
@@ -83,7 +83,6 @@
     path: "/usr/local/bin/gitlab-listener"
     state: link
   become: yes
-  when: dep_listener_release_version is changed
   tags:
     - listener
     - listener-install
