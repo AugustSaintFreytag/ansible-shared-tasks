@@ -9,6 +9,7 @@ Some tasks may use certain variables to control what kind of operations they per
 The set-up process prepares a cloud server instance for use and creates a suitable user account for use with SSH and Ansible automation tasks. The following variables are needed by the set-up task.
 
 #### `server_user`
+
 The name of the dedicated administration, automation and maintenance account, copying authentication from the root user set up during provisioning (e.g. SSH known public keys). As `ansible_user` is usually `root` for initial set-up, this variable should not be set to `root` too following best practices.
 
 ### Certificate Provisioning
@@ -23,3 +24,16 @@ The directory to store all logs created by `certbot` during operation, commonly 
 
 #### `server_certificate_provisioning_user`
 The directory to store all logs created by `certbot` during operation, commonly set to `var/log/letsencrypt`.
+
+### GitLab Listener
+
+[Listener](https://gitlab.com/apricum/gitlab-listener) is a utility for setting up autonomous releases and custom lifecycles for server environments. When including the task, the following variables should be defined.
+
+#### `dep_listener_release_root`
+The path to precompiled and packaged releases on the host machine to be copied to a remote (without a trailing slash).
+
+#### `dep_listener_release_name`
+The name of the package file for the current release to be loaded and installed. Expected to be located in the release root at `dep_listener_release_root`. Example: `"GitLabListener-0.4.0.tar.gz"`.
+
+#### `dep_listener_service`
+The path to a prepared `systemd` service definition file to be copied and installed for use as a start-on-launch service on a remote.
