@@ -20,46 +20,44 @@
   tags:
     - listener
 
-# Copy and Install Release
-
-- name: "FILE - Copy GitLab Listener binary release"
-  copy:
-    src: "{{ dep_listener_release_root }}/{{ dep_listener_release_name }}"
-    dest: "/var/tmp/{{ dep_listener_release_name }}"
+# Download Release
+  
+- name: "FILE - Download GitLab Listener release"
+  get_url:
+    url: "{{ dep_listener_release }}"
+    dest: "/var/tmp/gitlab-listener"
   when: dep_listener_release_version is changed
   tags:
     - listener
+    - listener-download
     
 - name: "FILE - Remove existing GitLab Listener temporary files"
   file:
-    dest: "/var/tmp/gitlab-listener"
+    dest: "/var/tmp/gitlab-listener.tar.gz"
     state: absent
   tags:
     - listener
-
-- name: "FILE - Prepare GitLab Listener unarchival directory"
-  file:
-    dest: "/var/tmp/gitlab-listener"
-    state: directory
-  when: dep_listener_release_version is changed
-  tags:
-    - listener
+    - listener-unpack
 
 - name: "FILE - Unpack GitLab Listener release"
   unarchive:
     remote_src: yes
-    src: "/var/tmp/{{ dep_listener_release_name }}"
-    dest: "/var/tmp/gitlab-listener"
+    src: "/var/tmp/gitlab-listener.tar.gz"
+    dest: "/var/tmp/"
   when: dep_listener_release_version is changed
   tags:
     - listener
+    - listener-unpack
 
 - name: "FILE - Remove GitLab Listener release archive"
   file:
-    dest: "/var/tmp/{{ dep_listener_release_name }}"
+    dest: "/var/tmp/gitlab-listener.tar.gz"
     state: absent
   tags:
     - listener
+    - listener-unpack
+
+# Install Release
 
 - name: "FILE - Prepare GitLab Listener installation directory"
   file:
@@ -69,13 +67,15 @@
   when: dep_listener_release_version is changed
   tags:
     - listener
+    - listener-install
 
 - name: "FILE - Install GitLab Listener"
-  command: "rsync -av --delete /var/tmp/gitlab-listener/ /usr/local/share/gitlab-listener"
+  command: "cp /var/tmp/GitLabListener /usr/local/share/gitlab-listener/"
   become: yes
   when: dep_listener_release_version is changed
   tags:
     - listener
+    - listener-install
 
 - name: "FILE - Link GitLab Listener to binary path"
   file:
@@ -86,6 +86,7 @@
   when: dep_listener_release_version is changed
   tags:
     - listener
+    - listener-install
 
 - name: "FILE - Create GitLab Listener configuration directory"
   file:
@@ -94,16 +95,6 @@
   become: yes
   tags:
     - listener
-
-- name: "FILE - Link GitLab Listener configuration to system"
-  file:
-    src: "{{ app_root }}/server/gitlab-listener/listener.plist"
-    dest: "/usr/local/etc/gitlab-listener/listener.plist"
-    state: link
-  become: yes
-  tags:
-    - listener
-    - listener-link
 
 # Set-Up Firewall Rules
 
