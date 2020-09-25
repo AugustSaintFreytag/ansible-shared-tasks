@@ -14,7 +14,7 @@
 - name: "FILE - Persist GitLab Listener release version"
   copy:
     dest: "/var/lib/gitlab-listener/gitlab-listener-release"
-    content: "{{ dep_listener_release_name }}\n"
+    content: "{{ dep_listener_release }}\n"
   become: yes
   register: "dep_listener_release_version"
   tags:
