@@ -39,11 +39,5 @@ The public URL of the binary release of Swift as an archive, ready for installat
 #### `dep_listener_release`
 The public URL of the precompiled and packaged binary release of GitLab Listener as an archive, ready for installation on the target system.
 
-#### `dep_listener_release_root` (deprecated)
-The path to precompiled and packaged releases on the host machine to be copied to a remote (without a trailing slash).
-
-#### `dep_listener_release_name` (deprecated)
-The name of the package file for the current release to be loaded and installed. Expected to be located in the release root at `dep_listener_release_root`. Example: `"GitLabListener-0.4.0.tar.gz"`.
-
 #### `dep_listener_service`
-The path to a prepared `systemd` service definition file to be copied and installed for use as a start-on-launch service on a remote.
+The public URL to a prepared `systemd` service definition file to be copied and installed for use as a start-on-launch service on a remote.

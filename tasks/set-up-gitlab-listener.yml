@@ -109,11 +109,11 @@
     - listener-network
     - network
 
-# Copy System Service Definition
+# Load System Service Definition
 
-- name: "SERVICE - Install GitLab Listener service"
-  copy:
-    src: "{{ dep_listener_service }}"
+- name: "FILE - Download GitLab Listener service definition"
+  get_url:
+    url: "{{ dep_listener_service }}"
     dest: "/etc/systemd/system/gitlab-listener.service"
   become: yes
   tags:
