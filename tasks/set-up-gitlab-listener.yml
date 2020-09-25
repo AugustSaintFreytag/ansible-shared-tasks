@@ -106,9 +106,9 @@
     comment: "HTTP"
   become: yes
   tags:
-	- listener
-	- listener-network
-  - network
+    - listener
+    - listener-network
+    - network
 
 # Copy System Service Definition
 
@@ -118,8 +118,8 @@
     dest: "/etc/systemd/system/gitlab-listener.service"
   become: yes
   tags:
-	- listener
-	- listener-system-service
+    - listener
+    - listener-system-service
 
 # Enable and Start System Service
 
