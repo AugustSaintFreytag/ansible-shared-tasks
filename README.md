@@ -41,3 +41,10 @@ The public URL of the precompiled and packaged binary release of GitLab Listener
 
 #### `dep_listener_service`
 The public URL to a prepared `systemd` service definition file to be copied and installed for use as a start-on-launch service on a remote.
+
+### Cockpit Sync
+
+The internal data and managed assets can be saved to a local archive on disk or restored from previously extracted data with [Cockpit Sync](https://gitlab.com/apricum/cockpit-sync), a command line utility to manage a Cockpit set-up running through Docker and an associated data volume. When including the task, the following variables should be defined.
+
+#### `dep_cockpit_sync_release`
+The public URL of the precompiled and packaged binary release of Cockpit Sync as an archive, ready for installation on the target system.
