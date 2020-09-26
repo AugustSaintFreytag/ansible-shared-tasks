@@ -1,0 +1,48 @@
+# Cockpit Sync Set-Up
+---
+
+- name: "FILE - Copy Cockpit Sync binary release"
+  get_url:
+    url: "{{ dep_cockpit_sync_release }}"
+    dest: "/var/tmp/cockpit-sync-release.tar.gz"
+  tags:
+    - cockpit-sync
+
+- name: "FILE - Prepare Cockpit Sync unarchival directory"
+  file:
+    dest: "/var/tmp/cockpit-sync"
+    state: directory
+  tags:
+    - cockpit-sync
+
+- name: "FILE - Unpack Cockpit Sync release"
+  unarchive:
+    remote_src: yes
+    src: "/var/tmp/cockpit-sync-release.tar.gz"
+    dest: "/var/tmp/cockpit-sync"
+  tags:
+    - cockpit-sync
+
+- name: "FILE - Install Cockpit Sync in binary path"
+  become: yes
+  copy:
+    remote_src: yes
+    src: "/var/tmp/cockpit-sync/cockpit-sync"
+    dest: "/usr/local/bin/cockpit-sync"
+  tags:
+    - cockpit-sync
+
+- name: "FILE - Set Cockpit Sync permissions"
+  become: yes
+  file:
+    dest: "/usr/local/bin/cockpit-sync"
+    mode: a+x
+  tags:
+    - cockpit-sync
+
+- name: "FILE - Remove Cockpit Sync release archive"
+  file:
+    dest: "/var/tmp/cockpit-sync-release.tar.gz"
+    state: absent
+  tags:
+    - cockpit-sync
