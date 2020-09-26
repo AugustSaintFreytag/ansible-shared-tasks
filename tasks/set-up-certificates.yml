@@ -1,3 +1,6 @@
+# Certificate Provisioning/Renewal (Let's Encrypt)
+---
+
 - name: "CRYPTO - Create base directory for certificates"
   file:
     path: "{{ server_certificate_directory }}"

@@ -1,0 +1,142 @@
+# GitLab Listener Installation & Set-Up
+---
+
+# Persist Installation Version
+
+- name: "FILE - Create directory for GitLab Listener version persistence"
+  file:
+    path: "/var/lib/gitlab-listener/"
+    state: directory
+  become: yes
+  tags:
+    - listener
+
+- name: "FILE - Persist GitLab Listener release version"
+  copy:
+    dest: "/var/lib/gitlab-listener/gitlab-listener-release"
+    content: "{{ dep_listener_release }}\n"
+  become: yes
+  register: "dep_listener_release_version"
+  tags:
+    - listener
+
+# Stop Service (if exists)
+
+- name: "SERVICE - Stop GitLab Listener service"
+  systemd:
+    name: gitlab-listener.service
+    enabled: yes
+    state: stopped
+    no_block: yes
+  become: yes
+  ignore_errors: yes
+  tags:
+    - listener
+    - listener-system-service
+
+# Download Release
+
+- name: "FILE - Download GitLab Listener release"
+  get_url:
+    url: "{{ dep_listener_release }}"
+    dest: "/var/tmp/gitlab-listener.tar.gz"
+  when: dep_listener_release_version is changed
+  tags:
+    - listener
+    - listener-download
+
+- name: "FILE - Unpack GitLab Listener release"
+  unarchive:
+    remote_src: yes
+    src: "/var/tmp/gitlab-listener.tar.gz"
+    dest: "/var/tmp/"
+  when: dep_listener_release_version is changed
+  tags:
+    - listener
+    - listener-unpack
+
+- name: "FILE - Remove GitLab Listener release archive"
+  file:
+    dest: "/var/tmp/gitlab-listener.tar.gz"
+    state: absent
+  when: dep_listener_release_version is changed
+  tags:
+    - listener
+    - listener-unpack
+
+# Install Release
+
+- name: "FILE - Prepare GitLab Listener installation directory"
+  file:
+    dest: "/usr/local/share/gitlab-listener"
+    state: directory
+  become: yes
+  when: dep_listener_release_version is changed
+  tags:
+    - listener
+    - listener-install
+
+- name: "FILE - Install GitLab Listener"
+  command: "cp /var/tmp/GitLabListener /usr/local/share/gitlab-listener/"
+  become: yes
+  when: dep_listener_release_version is changed
+  tags:
+    - listener
+    - listener-install
+
+- name: "FILE - Link GitLab Listener to binary path"
+  file:
+    src: "/usr/local/share/gitlab-listener/GitLabListener"
+    path: "/usr/local/bin/gitlab-listener"
+    state: link
+  become: yes
+  tags:
+    - listener
+    - listener-install
+
+- name: "FILE - Create GitLab Listener configuration directory"
+  file:
+    path: "/usr/local/etc/gitlab-listener"
+    state: directory
+  become: yes
+  tags:
+    - listener
+
+# Set-Up Firewall Rules
+
+- name: "UFW - Allow HTTP connections for listener"
+  ufw:
+    rule: allow
+    proto: tcp
+    to_port: "8080"
+    comment: "HTTP"
+  become: yes
+  tags:
+    - listener
+    - listener-network
+    - network
+
+# Load System Service Definition
+
+- name: "FILE - Download GitLab Listener service definition"
+  get_url:
+    url: "{{ dep_listener_service }}"
+    dest: "/etc/systemd/system/gitlab-listener.service"
+  become: yes
+  tags:
+    - listener
+    - listener-system-service
+
+# Enable and Start System Service
+
+- name: "SERVICE - Start GitLab Listener service"
+  systemd:
+    name: gitlab-listener.service
+    enabled: yes
+    state: started
+    daemon_reload: yes
+    no_block: yes
+  become: yes
+  tags:
+    - listener
+    - listener-system-service

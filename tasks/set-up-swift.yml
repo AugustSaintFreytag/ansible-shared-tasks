@@ -1,4 +1,7 @@
-# Dependency Set-Up
+# Swift Set-Up
+---
+
+# Install Dependencies
 
 - name: "APT - Install common dependencies"
   apt:
@@ -32,8 +35,8 @@
 
 - name: "FILE - Download Swift release"
   get_url:
-    dest: "/var/tmp/swift-archive.tar.gz"
     url: "{{ dep_swift_release }}"
+    dest: "/var/tmp/swift-archive.tar.gz"
   when: swift_release_version is changed
   tags:
     - swift

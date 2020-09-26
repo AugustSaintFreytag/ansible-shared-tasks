@@ -1,3 +1,6 @@
+# HTTP/HTTPS Firewall Configuration
+---
+
 - name: UFW - Allow HTTP connections
   ufw:
     rule: allow

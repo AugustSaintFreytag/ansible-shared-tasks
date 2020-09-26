@@ -1,4 +1,5 @@
 # Virtual Private Server Set-Up
+---
 
 - name: APT - Install Prerequisites
   apt:
@@ -8,6 +9,7 @@
     force_apt_get: yes
 
 # Sudo Group Setup
+
 - name: SYSTEM - Ensure 'wheel' permission group
   group:
     name: wheel
@@ -21,7 +23,8 @@
     line: '%wheel ALL=(ALL) NOPASSWD: ALL'
     validate: '/usr/sbin/visudo -cf %s'
 
-# User + Key Setup
+# User and Key Set-Up
+
 - name: SYSTEM - Create new regular user with sudo privileges
   user:
     name: "{{ server_user }}"
@@ -61,6 +64,7 @@
   tags: ssh-keys
 
 # Install Packages
+
 - name: APT - Update apt package manager
   apt:
     update_cache: yes
@@ -71,6 +75,7 @@
     update_cache: yes
 
 # UFW Setup
+
 - name: UFW - Allow SSH connections
   ufw:
     rule: allow
@@ -83,11 +88,13 @@
     direction: incoming
 
 # Update Packages
+
 - name: APT - Safe update for all apt packages
   apt: upgrade=yes
   tags: "upgrade"
 
 # Reboot System
+
 - name: SYSTEM - Reboot system
   reboot:
   tags: "upgrade"
