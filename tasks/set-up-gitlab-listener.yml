@@ -20,14 +20,21 @@
   tags:
     - listener
 
-# Download Release
-  
-- name: "FILE - Remove existing temporary GitLab Listener files"
-  command: "rm -rf /var/tmp/gitlab-listener*"
-  when: dep_listener_release_version is changed
+# Stop Service (if exists)
+
+- name: "SERVICE - Stop GitLab Listener service"
+  systemd:
+    name: gitlab-listener.service
+    enabled: yes
+    state: stopped
+    no_block: yes
+  become: yes
+  ignore_errors: yes
   tags:
     - listener
-    - listener-download
+    - listener-system-service
+
+# Download Release
 
 - name: "FILE - Download GitLab Listener release"
   get_url:
