@@ -98,35 +98,10 @@
   ufw:
     rule: allow
     proto: tcp
-    to_port: "8080"
+    to_port: "{{ listener_server_port }}"
     comment: "HTTP"
   become: yes
   tags:
     - listener
     - listener-network
     - network
-
-# Load System Service Definition
-
-- name: "FILE - Download GitLab Listener service definition"
-  get_url:
-    url: "{{ dep_listener_service }}"
-    dest: "/etc/systemd/system/gitlab-listener.service"
-  become: yes
-  tags:
-    - listener
-    - listener-system-service
-
-# Enable and Start System Service
-
-- name: "SERVICE - Start GitLab Listener service"
-  systemd:
-    name: gitlab-listener.service
-    enabled: yes
-    state: started
-    daemon_reload: yes
-    no_block: yes
-  become: yes
-  tags:
-    - listener
-    - listener-system-service

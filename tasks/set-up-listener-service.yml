@@ -1,0 +1,41 @@
+# GitLab Listener Configuration Installation
+---
+
+# Stop Service (if exists)
+
+- name: "SERVICE - Stop GitLab Listener service"
+  systemd:
+    name: gitlab-listener.service
+    enabled: yes
+    state: stopped
+    no_block: yes
+  become: yes
+  ignore_errors: yes
+  tags:
+    - listener
+    - listener-system-service
+
+# Load System Service Definition
+
+- name: "FILE - Download GitLab Listener service definition"
+  get_url:
+    url: "{{ dep_listener_service }}"
+    dest: "/etc/systemd/system/gitlab-listener.service"
+  become: yes
+  tags:
+    - listener
+    - listener-system-service
+
+# Enable and Start System Service
+
+- name: "SERVICE - Start GitLab Listener service"
+  systemd:
+    name: gitlab-listener.service
+    enabled: yes
+    state: started
+    daemon_reload: yes
+    no_block: yes
+  become: yes
+  tags:
+    - listener
+    - listener-system-service
