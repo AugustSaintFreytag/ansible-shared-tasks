@@ -11,6 +11,7 @@
   tags:
     - swift
     - swift-dependencies
+    - dependencies
 
 # Release Version Persistence
 
@@ -21,6 +22,7 @@
   become: yes
   tags:
     - swift
+    - dependencies
 
 - name: "FILE - Persist Swift binary release version"
   copy:
@@ -30,6 +32,7 @@
   register: "swift_release_version"
   tags:
     - swift
+    - dependencies
 
 # Release Download & Set-Up
 
@@ -41,6 +44,7 @@
   tags:
     - swift
     - swift-download
+    - dependencies
 
 - name: "FILE - Unpack Swift release download"
   unarchive:
@@ -50,6 +54,7 @@
   when: swift_release_version is changed
   tags:
     - swift
+    - dependencies
 
 - name: "FILE - Install Swift release"
   command: "/bin/sh -c 'rsync -av /var/tmp/swift*/usr/ /usr'"
@@ -57,6 +62,7 @@
   when: swift_release_version is changed
   tags:
     - swift
+    - dependencies
 
 - name: "FILE - Remove temporary Swift archives"
   command: "/bin/sh -c 'rm -rf /var/tmp/swift*'"
@@ -65,3 +71,4 @@
     - swift
     - swift-download
     - swift-cleanup
+    - dependencies
