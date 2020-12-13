@@ -19,7 +19,7 @@
   unarchive:
     remote_src: yes
     src: "/var/tmp/cockpit-sync-release.tar.gz"
-    dest: "/var/tmp/cockpit-sync"
+    dest: "/var/tmp"
   tags:
     - cockpit-sync
 
@@ -27,7 +27,7 @@
   become: yes
   copy:
     remote_src: yes
-    src: "/var/tmp/cockpit-sync/cockpit-sync"
+    src: "/var/tmp/CockpitSync"
     dest: "/usr/local/bin/cockpit-sync"
   tags:
     - cockpit-sync
