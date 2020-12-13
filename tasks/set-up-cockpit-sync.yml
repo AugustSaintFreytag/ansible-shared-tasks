@@ -5,7 +5,7 @@
 
 - name: "FILE - Create directory for Cockpit Sync version persistence"
   file:
-    path: "/var/lib/cockpit-sync/"
+    path: "/usr/local/var/lib/cockpit-sync/"
     state: directory
   become: yes
   tags:
@@ -13,7 +13,7 @@
 
 - name: "FILE - Persist Cockpit Sync release version"
   copy:
-    dest: "/var/lib/cockpit-sync/cockpit-sync-release"
+    dest: "/usr/local/var/lib/cockpit-sync/cockpit-sync-release"
     content: "{{ dep_cockpit_sync_release }}\n"
   become: yes
   register: "dep_cockpit_sync_release_version"

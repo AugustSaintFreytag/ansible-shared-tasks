@@ -17,7 +17,7 @@
 
 - name: "FILE - Create directory for Swift version persistence"
   file:
-    path: "/var/lib/swift"
+    path: "/usr/local/var/lib/swift"
     state: directory
   become: yes
   tags:
@@ -26,7 +26,7 @@
 
 - name: "FILE - Persist Swift binary release version"
   copy:
-    dest: "/var/lib/swift/swift-release"
+    dest: "/usr/local/var/lib/swift/swift-release"
     content: "{{ dep_swift_release }}\n"
   become: yes
   register: "swift_release_version"

@@ -5,7 +5,7 @@
 
 - name: "FILE - Create directory for GitLab Listener version persistence"
   file:
-    path: "/var/lib/gitlab-listener/"
+    path: "/usr/local/var/lib/gitlab-listener/"
     state: directory
   become: yes
   tags:
@@ -13,7 +13,7 @@
 
 - name: "FILE - Persist GitLab Listener release version"
   copy:
-    dest: "/var/lib/gitlab-listener/gitlab-listener-release"
+    dest: "/usr/local/var/lib/gitlab-listener/gitlab-listener-release"
     content: "{{ dep_listener_release }}\n"
   become: yes
   register: "dep_listener_release_version"
