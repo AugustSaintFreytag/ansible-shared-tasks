@@ -36,7 +36,7 @@
 
 # Download Release
 
-- name: "FILE - Download GitLab Listener release"
+- name: "FILE - Get GitLab Listener release"
   get_url:
     url: "{{ dep_listener_release }}"
     dest: "/var/tmp/gitlab-listener.tar.gz"
@@ -73,6 +73,8 @@
   tags:
     - listener
     - listener-install
+
+# Prepare Release
 
 - name: "FILE - Set GitLab Listener permissions"
   become: yes
