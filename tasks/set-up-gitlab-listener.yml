@@ -66,33 +66,21 @@
 
 # Install Release
 
-- name: "FILE - Prepare GitLab Listener installation directory"
-  file:
-    dest: "/usr/local/share/gitlab-listener"
-    state: directory
-  become: yes
-  when: dep_listener_release_version is changed
-  tags:
-    - listener
-    - listener-install
-
 - name: "FILE - Install GitLab Listener"
-  command: "cp /var/tmp/GitLabListener /usr/local/share/gitlab-listener/"
+  command: "cp /var/tmp/GitLabListener /usr/local/bin/gitlab-listener"
   become: yes
   when: dep_listener_release_version is changed
   tags:
     - listener
     - listener-install
 
-- name: "FILE - Link GitLab Listener to binary path"
-  file:
-    src: "/usr/local/share/gitlab-listener/GitLabListener"
-    path: "/usr/local/bin/gitlab-listener"
-    state: link
+- name: "FILE - Set GitLab Listener permissions"
   become: yes
+  file:
+    dest: "/usr/local/bin/gitlab-listener"
+    mode: a+x
   tags:
     - listener
-    - listener-install
 
 - name: "FILE - Create GitLab Listener configuration directory"
   file:
