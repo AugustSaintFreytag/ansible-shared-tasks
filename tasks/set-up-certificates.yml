@@ -16,7 +16,7 @@
   docker_container:
     image: "certbot/certbot"
     name: "luxembourg_certbot"
-    command: "certonly -n --standalone --preferred-challenges http --agree-tos --email {{ server_certificate_provisioning_user }} --cert-name {{ server_domain.name }} -d {{ server_domain.domains }}"
+    command: "certonly -n --standalone --preferred-challenges http --agree-tos --email {{ server_nginx_certificate_provisioning_user }} --cert-name {{ server_domain.name }} -d {{ server_domain.domains }}"
     volumes:
       - "{{ server_certificate_directory }}:/etc/letsencrypt"
       - "{{ server_certificate_log_directory }}:/var/log/letsencrypt"

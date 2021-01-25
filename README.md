@@ -22,7 +22,7 @@ The root directory all output and dependency files for `certbot` are placed for 
 #### `server_certificate_log_directory`
 The directory to store all logs created by `certbot` during operation, commonly set to `var/log/letsencrypt`.
 
-#### `server_certificate_provisioning_user`
+#### `server_nginx_certificate_provisioning_user`
 The directory to store all logs created by `certbot` during operation, commonly set to `var/log/letsencrypt`.
 
 ### Swift
