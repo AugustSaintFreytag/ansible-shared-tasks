@@ -1,6 +1,5 @@
 # Virtual Private Server Set-Up
 ---
-
 - name: APT - Install Prerequisites
   apt:
     name: aptitude
@@ -19,9 +18,9 @@
   lineinfile:
     path: /etc/sudoers
     state: present
-    regexp: '^%wheel'
-    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
-    validate: '/usr/sbin/visudo -cf %s'
+    regexp: "^%wheel"
+    line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+    validate: "/usr/sbin/visudo -cf %s"
 
 # User and Key Set-Up
 
@@ -38,8 +37,8 @@
   lineinfile:
     path: /etc/ssh/sshd_config
     state: present
-    regexp: '^#?PermitRootLogin'
-    line: 'PermitRootLogin prohibit-password'
+    regexp: "^#?PermitRootLogin"
+    line: "PermitRootLogin prohibit-password"
 
 - name: "SYSTEM - Pass ownership of copied authorized keys to ansible user"
   file:
@@ -47,21 +46,24 @@
     state: directory
     owner: "{{ server_user }}"
     group: "{{ server_user }}"
-  tags: ssh-keys
+  tags:
+    - ssh-keys
 
 - name: "SYSTEM - Copy authorized keys from root user"
   copy:
     remote_src: yes
     src: "/root/.ssh/authorized_keys"
     dest: "/home/{{ server_user }}/.ssh/authorized_keys"
-  tags: ssh-keys
+  tags:
+    - ssh-keys
 
 - name: "SYSTEM - Pass ownership of copied authorized keys to ansible user"
   file:
     path: "/home/server/.ssh"
     owner: "{{ server_user }}"
     group: "{{ server_user }}"
-  tags: ssh-keys
+  tags:
+    - ssh-keys
 
 # Install Packages
 
@@ -91,10 +93,12 @@
 
 - name: APT - Safe update for all apt packages
   apt: upgrade=yes
-  tags: "upgrade"
+  tags:
+    - upgrade
 
 # Reboot System
 
 - name: SYSTEM - Reboot system
   reboot:
-  tags: "upgrade"
+  tags:
+    - upgrade
