@@ -1,11 +1,21 @@
 # Swift Set-Up
 ---
-
 # Install Dependencies
 
 - name: "APT - Install common dependencies"
   apt:
-    name: ["clang", "libicu-dev", "libcurl4", "libcurl4-openssl-dev", "openssl", "libssl-dev", "libpython2.7", "libpython2.7-dev", "uuid-dev"]
+    name:
+      [
+        "clang",
+        "libicu-dev",
+        "libcurl4",
+        "libcurl4-openssl-dev",
+        "openssl",
+        "libssl-dev",
+        "libpython2.7",
+        "libpython2.7-dev",
+        "uuid-dev",
+      ]
     update_cache: yes
   become: yes
   tags:

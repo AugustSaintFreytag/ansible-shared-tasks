@@ -1,6 +1,5 @@
 # Docker Dependencies and Set-Up
 ---
-
 - name: "APT - Add Docker GPG key for installation"
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
@@ -16,8 +15,8 @@
     filename: docker
   become: yes
   tags:
-  - dependencies
-  
+    - dependencies
+
 - name: "APT - Install common dependencies"
   apt:
     name: ["docker-ce"]
@@ -25,10 +24,11 @@
   become: yes
   tags:
     - dependencies
-  
+
 - name: "PIP - Install Docker SDK for Python (Docker module dependency)"
   pip:
     name: ["docker", "docker-compose"]
+    state: latest
   become: yes
   tags:
     - dependencies

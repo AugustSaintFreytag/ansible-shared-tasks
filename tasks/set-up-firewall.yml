@@ -1,6 +1,5 @@
 # HTTP/HTTPS Firewall Configuration
 ---
-
 - name: UFW - Allow HTTP connections
   ufw:
     rule: allow
@@ -10,7 +9,7 @@
   become: yes
   tags:
     - network
-  
+
 - name: UFW - Allow HTTPS connections
   ufw:
     rule: allow

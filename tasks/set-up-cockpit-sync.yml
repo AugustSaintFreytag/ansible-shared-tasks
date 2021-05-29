@@ -1,6 +1,5 @@
 # Cockpit Sync Set-Up
 ---
-
 # Persist Installation Version
 
 - name: "FILE - Create directory for Cockpit Sync version persistence"

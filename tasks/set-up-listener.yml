@@ -1,6 +1,5 @@
 # GitLab Listener Installation & Set-Up
 ---
-
 # Persist Installation Version
 
 - name: "FILE - Create directory for GitLab Listener version persistence"

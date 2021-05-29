@@ -1,6 +1,5 @@
 # GitLab Listener Configuration Installation
 ---
-
 # Stop Service (if exists)
 
 - name: "SERVICE - Stop GitLab Listener service"
