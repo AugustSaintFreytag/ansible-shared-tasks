@@ -89,6 +89,21 @@
     policy: deny
     direction: incoming
 
+# Set-Up Shell
+
+- name: "APT - Install ZSH"
+  apt:
+    name: ["zsh"]
+    update_cache: yes
+  become: yes
+  tags:
+    - dependencies
+
+- name: "SYSTEM - Set Server Shell"
+  user:
+    name: "{{ server_user }}"
+    shell: /usr/bin/zsh
+
 # Update Packages
 
 - name: APT - Safe update for all apt packages
