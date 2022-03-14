@@ -1,6 +1,6 @@
 # Docker Dependencies and Set-Up
 ---
-- name: Install Docker prerequisites
+- name: "APT - Install Docker prerequisites"
   apt:
     name: ["apt-transport-https", "ca-certificates", "curl", "gnupg", "lsb-release", "software-properties-common"]
     update_cache: yes
@@ -35,4 +35,15 @@
   become: yes
   tags:
     - docker
+    - dependencies
+
+- name: "MISC - Install Docker Compose V2"
+  shell: |
+    DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+    mkdir -p $DOCKER_CONFIG/cli-plugins
+    curl -SL https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+  become: yes
+  tags:
+    - docker
+    - docker-compose
     - dependencies
