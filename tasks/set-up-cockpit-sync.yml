@@ -24,14 +24,14 @@
 - name: "FILE - Get Cockpit Sync binary release"
   get_url:
     url: "{{ dep_cockpit_sync_release }}"
-    dest: "/var/tmp/cockpit-sync-release.tar.gz"
+    dest: "/tmp/cockpit-sync-release.tar.gz"
   when: dep_cockpit_sync_release_version is changed
   tags:
     - cockpit-sync
 
 - name: "FILE - Prepare Cockpit Sync unarchival directory"
   file:
-    dest: "/var/tmp/cockpit-sync"
+    dest: "/tmp/cockpit-sync"
     state: directory
   when: dep_cockpit_sync_release_version is changed
   tags:
@@ -40,15 +40,15 @@
 - name: "FILE - Unpack Cockpit Sync release"
   unarchive:
     remote_src: yes
-    src: "/var/tmp/cockpit-sync-release.tar.gz"
-    dest: "/var/tmp"
+    src: "/tmp/cockpit-sync-release.tar.gz"
+    dest: "/tmp"
   when: dep_cockpit_sync_release_version is changed
   tags:
     - cockpit-sync
 
 - name: "FILE - Remove Cockpit Sync release archive"
   file:
-    dest: "/var/tmp/cockpit-sync-release.tar.gz"
+    dest: "/tmp/cockpit-sync-release.tar.gz"
     state: absent
   tags:
     - cockpit-sync
@@ -59,7 +59,7 @@
   become: yes
   copy:
     remote_src: yes
-    src: "/var/tmp/CockpitSync"
+    src: "/tmp/CockpitSync"
     dest: "/usr/local/bin/cockpit-sync"
   when: dep_cockpit_sync_release_version is changed
   tags:

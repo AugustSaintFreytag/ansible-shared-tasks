@@ -38,7 +38,7 @@
 - name: "FILE - Get GitLab Listener release"
   get_url:
     url: "{{ dep_listener_release }}"
-    dest: "/var/tmp/gitlab-listener.tar.gz"
+    dest: "/tmp/gitlab-listener.tar.gz"
   when: dep_listener_release_version is changed
   tags:
     - listener
@@ -47,8 +47,8 @@
 - name: "FILE - Unpack GitLab Listener release"
   unarchive:
     remote_src: yes
-    src: "/var/tmp/gitlab-listener.tar.gz"
-    dest: "/var/tmp/"
+    src: "/tmp/gitlab-listener.tar.gz"
+    dest: "/tmp/"
   when: dep_listener_release_version is changed
   tags:
     - listener
@@ -56,7 +56,7 @@
 
 - name: "FILE - Remove GitLab Listener release archive"
   file:
-    dest: "/var/tmp/gitlab-listener.tar.gz"
+    dest: "/tmp/gitlab-listener.tar.gz"
     state: absent
   when: dep_listener_release_version is changed
   tags:
@@ -66,7 +66,7 @@
 # Install Release
 
 - name: "FILE - Install GitLab Listener"
-  command: "cp /var/tmp/GitLabListener /usr/local/bin/gitlab-listener"
+  command: "cp /tmp/GitLabListener /usr/local/bin/gitlab-listener"
   become: yes
   when: dep_listener_release_version is changed
   tags:
