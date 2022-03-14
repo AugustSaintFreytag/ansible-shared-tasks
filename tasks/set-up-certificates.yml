@@ -14,7 +14,7 @@
 - name: "CRYPTO - Generate or update certificates"
   docker_container:
     image: "certbot/certbot"
-    name: "standalone_certbot"
+    name: "custom-certbot"
     command: "certonly -n --standalone --preferred-challenges http --agree-tos --email {{ server_nginx_certificate_provisioning_user }} --cert-name {{ server_domain.name }} -d {{ server_domain.domains }}"
     volumes:
       - "{{ server_certificate_directory }}:/etc/letsencrypt"
@@ -87,7 +87,7 @@
 - name: "CRYPTO - Generate DH parameters"
   docker_container:
     image: "frapsoft/openssl"
-    name: "custom/openssl"
+    name: "custom-openssl"
     command: "dhparam -dsaparam -out /etc/letsencrypt/params/dhparam-4096.pem 4096"
     volumes:
       - "{{ server_certificate_directory }}:/etc/letsencrypt"
