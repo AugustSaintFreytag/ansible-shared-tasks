@@ -4,6 +4,7 @@
   apt:
     name: ["ca-certificates", "curl", "gnupg", "lsb-release"]
     update_cache: yes
+  become: yes
   tags:
     - docker
     - dependencies
