@@ -1,11 +1,20 @@
 # Docker Dependencies and Set-Up
 ---
+- name: Install Docker prerequisites
+  apt:
+    name: ["ca-certificates", "curl", "gnupg", "lsb-release"]
+    update_cache: yes
+  tags:
+    - docker
+    - dependencies
+
 - name: "APT - Add Docker GPG key for installation"
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
   become: yes
   tags:
+    - docker
     - dependencies
 
 - name: "APT - Register Docker repository"
@@ -15,20 +24,14 @@
     filename: docker
   become: yes
   tags:
+    - docker
     - dependencies
 
 - name: "APT - Install common dependencies"
   apt:
-    name: ["docker-ce"]
+    name: ["docker-ce", "docker-ce-cli", "containerd.io"]
     update_cache: yes
   become: yes
   tags:
-    - dependencies
-
-- name: "PIP - Install Docker SDK for Python (Docker module dependency)"
-  pip:
-    name: ["docker", "docker-compose"]
-    state: latest
-  become: yes
-  tags:
+    - docker
     - dependencies
