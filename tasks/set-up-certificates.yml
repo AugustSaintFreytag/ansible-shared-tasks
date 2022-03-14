@@ -87,7 +87,7 @@
 - name: "CRYPTO - Generate DH parameters"
   docker_container:
     image: "frapsoft/openssl"
-    name: "luxembourg_openssl"
+    name: "custom/openssl"
     command: "dhparam -dsaparam -out /etc/letsencrypt/params/dhparam-4096.pem 4096"
     volumes:
       - "{{ server_certificate_directory }}:/etc/letsencrypt"
