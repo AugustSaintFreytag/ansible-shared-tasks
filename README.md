@@ -32,6 +32,9 @@ The [Swift language](https://swift.org) is a general-purpose, open source progra
 #### `dep_swift_release`
 The public URL of the binary release of Swift as an archive, ready for installation on the target system.
 
+#### `dep_swift_resource`
+The file name at the end of the URL for the used Swift release.
+
 ### GitLab Listener
 
 [GitLab Listener](https://gitlab.com/apricum/gitlab-listener) is a utility for setting up autonomous releases and custom lifecycles for server environments. When including the task, the following variables should be defined.

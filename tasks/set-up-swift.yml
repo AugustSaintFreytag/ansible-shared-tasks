@@ -7,14 +7,8 @@
     name:
       [
         "clang",
-        "libicu-dev",
-        "libcurl4",
-        "libcurl4-openssl-dev",
-        "openssl",
-        "libssl-dev",
         "libpython2.7",
-        "libpython2.7-dev",
-        "uuid-dev",
+        "libpython2.7-dev"
       ]
     update_cache: yes
   become: yes
@@ -49,7 +43,7 @@
 - name: "FILE - Download Swift release"
   get_url:
     url: "{{ dep_swift_release }}"
-    dest: "/var/tmp/swift-archive.tar.gz"
+    dest: "/tmp/{{ dep_swift_resource }}.tar.gz"
   when: swift_release_version is changed
   tags:
     - swift
@@ -59,15 +53,31 @@
 - name: "FILE - Unpack Swift release download"
   unarchive:
     remote_src: yes
-    src: /var/tmp/swift-archive.tar.gz
-    dest: /var/tmp/
+    src: "/tmp/{{ dep_swift_resource }}.tar.gz"
+    dest: "/tmp/"
   when: swift_release_version is changed
   tags:
     - swift
     - dependencies
 
 - name: "FILE - Install Swift release"
-  command: "/bin/sh -c 'rsync -av /var/tmp/swift*/usr/ /usr'"
+  command: "mv /tmp/{{ dep_swift_resource }} /usr/share/swift"
+  become: yes
+  when: swift_release_version is changed
+  tags:
+    - swift
+    - dependencies
+
+- name: "FILE - Link Swift main executable"
+  command: "ln -sf /usr/share/swift/bin/swift /usr/bin/"
+  become: yes
+  when: swift_release_version is changed
+  tags:
+    - swift
+    - dependencies
+
+- name: "FILE - Link Swift dynamic runtime libraries"
+  command: "ln -sf /usr/share/swift/usr/lib/swift /usr/lib/"
   become: yes
   when: swift_release_version is changed
   tags:
@@ -75,7 +85,9 @@
     - dependencies
 
 - name: "FILE - Remove temporary Swift archives"
-  command: "/bin/sh -c 'rm -rf /var/tmp/swift*'"
+  file:
+    dest: "/tmp/{{ dep_swift_resource }}.tar.gz"
+    state: absent
   when: swift_release_version is changed
   tags:
     - swift
