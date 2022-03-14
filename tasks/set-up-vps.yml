@@ -67,10 +67,6 @@
 
 # Install Packages
 
-- name: APT - Update apt package manager
-  apt:
-    update_cache: yes
-
 - name: Install required system packages
   apt:
     name: ["curl", "vim", "git", "ufw"]
