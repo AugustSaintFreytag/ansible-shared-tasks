@@ -66,18 +66,9 @@
 
 # DH Parameters
 
-- name: "CRYPTO - Create directory for parameters"
-  file:
-    path: "{{ server_certificate_directory }}/params/"
-    state: directory
-  become: yes
-  tags:
-    - certificates
-    - certificate-dh-parameters
-
 - name: "CRYPTO - Get DH parameters file system stats"
   stat:
-    path: "{{ server_certificate_directory }}/params/dhparam-4096.pem"
+    path: "{{ server_certificate_directory }}/dhparams.pem"
   become: yes
   register: server_certificate_dh_parameters_stats
   tags:
@@ -88,9 +79,9 @@
   docker_container:
     image: "frapsoft/openssl"
     name: "custom-openssl"
-    command: "dhparam -dsaparam -out /etc/letsencrypt/params/dhparam-4096.pem 4096"
+    command: "dhparam -dsaparam -out /var/dhparams/dhparams.pem 4096"
     volumes:
-      - "{{ server_certificate_directory }}:/etc/letsencrypt"
+      - "{{ server_certificate_directory }}:/var/dhparams"
     detach: no
     cleanup: yes
   become: yes
